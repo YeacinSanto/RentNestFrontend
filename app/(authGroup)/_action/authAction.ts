@@ -88,3 +88,12 @@ export const registerAction = async (prevState : RegisterState , formData: FormD
 
     return result
 }
+
+export const logoutAction = async () => {
+    const cookieStore = await cookies()
+
+    cookieStore.delete("accessToken")
+    cookieStore.delete("refreshToken")
+
+    redirect("/")
+}

@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useActionState, useState } from "react"
-import { EyeIcon, EyeSlashIcon } from "@phosphor-icons/react"
+import { EyeIcon, EyeSlashIcon, HouseLineIcon, WarningCircleIcon } from "@phosphor-icons/react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -19,6 +19,9 @@ const RegisterForm = () => {
   return (
     <Card className="w-full max-w-sm">
       <CardHeader>
+        <span className="mb-1 flex size-10 items-center justify-center rounded-2xl bg-primary text-primary-foreground">
+          <HouseLineIcon size={20} weight="fill" />
+        </span>
         <CardTitle className="text-xl">Create your account</CardTitle>
         <CardDescription>Sign up to start browsing or listing properties.</CardDescription>
       </CardHeader>
@@ -85,7 +88,12 @@ const RegisterForm = () => {
             </div>
           </div>
 
-          {state?.error && <p className="text-sm text-destructive">{state.error}</p>}
+          {state?.error && (
+            <div className="flex items-start gap-2 rounded-2xl bg-destructive/10 px-3 py-2.5 text-sm text-destructive">
+              <WarningCircleIcon size={18} className="mt-0.5 shrink-0" />
+              <p>{state.error}</p>
+            </div>
+          )}
 
           <Button type="submit" disabled={pending} className="mt-2 w-full">
             {pending ? "Signing up..." : "Sign up"}
