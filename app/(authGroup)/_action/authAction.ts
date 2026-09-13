@@ -45,7 +45,20 @@ export const loginAction = async (prevState : LoginState , formData: FormData) :
             sameSite : "lax",
         });
 
-        redirect("/dashboard")
+        const meRes = await fetch(`${process.env.BACKEND_API_URL}/api/auth/me`, {
+            headers : {
+                Authorization : `Bearer ${result.data.accessToken}`
+            }
+        });
+        const me = await meRes.json();
+
+        const dashboardByRole : Record<string, string> = {
+            TENANT : "/dashboard/tenant",
+            LANDLORD : "/dashboard/landlord",
+            ADMIN : "/dashboard/admin",
+        }
+
+        redirect(me.success ? dashboardByRole[me.data.role] : "/")
     }
 
     return result
