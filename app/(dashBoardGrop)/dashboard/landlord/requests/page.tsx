@@ -64,9 +64,14 @@ export default async function LandlordRequestsPage() {
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">Review and respond to requests for your properties.</p>
         </div>
-        <Button asChild size="sm">
-          <Link href="/dashboard/landlord/properties/new">New listing</Link>
-        </Button>
+        <div className="flex gap-2">
+          <Button asChild variant="outline" size="sm">
+            <Link href="/dashboard/landlord/properties">My listings</Link>
+          </Button>
+          <Button asChild size="sm">
+            <Link href="/dashboard/landlord/properties/new">New listing</Link>
+          </Button>
+        </div>
       </div>
 
       {requests.length === 0 ? (
