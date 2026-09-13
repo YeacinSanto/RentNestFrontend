@@ -32,6 +32,37 @@ export async function requestRentalAction(
   redirect("/dashboard/tenant")
 }
 
+export type InitiatePaymentState = { error?: string } | undefined
+
+export async function initiatePaymentAction(
+  prevState: InitiatePaymentState,
+  formData: FormData
+): Promise<InitiatePaymentState> {
+  const rentalRequestId = formData.get("rentalRequestId")
+
+  const cookieStore = await cookies()
+  const accessToken = cookieStore.get("accessToken")?.value
+
+  const res = await fetch(`${process.env.BACKEND_API_URL}/api/payments`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify({ rentalRequestId }),
+  })
+
+  const result = await res.json()
+
+  if (!result.success) {
+    return { error: result.error ?? "Could not start payment. Please try again." }
+  }
+
+  const checkoutUrl: string | null = result.data.checkoutUrl
+
+  redirect(checkoutUrl ?? "/dashboard/tenant")
+}
+
 export type ReviewActionState = { success?: boolean; error?: string } | undefined
 
 export async function createReviewAction(

@@ -1,3 +1,4 @@
+import Link from "next/link"
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
 import { Badge } from "@/components/ui/badge"
@@ -106,6 +107,7 @@ export default async function TenantDashboardPage() {
                 <th className="px-4 py-3 font-medium">Property</th>
                 <th className="px-4 py-3 font-medium">Requested on</th>
                 <th className="px-4 py-3 font-medium">Status</th>
+                <th className="px-4 py-3 font-medium">Payment</th>
                 <th className="px-4 py-3 font-medium">Review</th>
               </tr>
             </thead>
@@ -122,6 +124,39 @@ export default async function TenantDashboardPage() {
                     </td>
                     <td className="px-4 py-3">
                       <Badge variant={statusVariant[request.status]}>{request.status}</Badge>
+                    </td>
+                    <td className="px-4 py-3">
+                      {(() => {
+                        if (request.status !== "APPROVED") {
+                          return <span className="text-xs text-muted-foreground">—</span>
+                        }
+
+                        const payment = payments.find((p) => p.rentalRequest.id === request.id)
+
+                        if (payment?.status === "PAID") {
+                          return <Badge variant="default">Paid</Badge>
+                        }
+
+                        if (payment) {
+                          return (
+                            <Link
+                              href={`/dashboard/tenant/requests/${request.id}/pay`}
+                              className="font-medium text-muted-foreground underline underline-offset-4"
+                            >
+                              {payment.status === "FAILED" ? "Payment failed" : "Payment pending"}
+                            </Link>
+                          )
+                        }
+
+                        return (
+                          <Link
+                            href={`/dashboard/tenant/requests/${request.id}/pay`}
+                            className="font-medium text-primary underline underline-offset-4"
+                          >
+                            Pay now
+                          </Link>
+                        )
+                      })()}
                     </td>
                     <td className="px-4 py-3">
                       {request.status === "COMPLETED" ? (
