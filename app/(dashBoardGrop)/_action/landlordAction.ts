@@ -1,0 +1,73 @@
+"use server"
+
+import { cookies } from "next/headers"
+import { revalidatePath } from "next/cache"
+import { redirect } from "next/navigation"
+
+export type RentalStatusActionState = { error?: string } | undefined
+
+export async function updateRentalRequestStatusAction(
+  prevState: RentalStatusActionState,
+  formData: FormData
+): Promise<RentalStatusActionState> {
+  const requestId = formData.get("requestId")
+  const status = formData.get("status")
+
+  const cookieStore = await cookies()
+  const accessToken = cookieStore.get("accessToken")?.value
+
+  const res = await fetch(`${process.env.BACKEND_API_URL}/api/landlord/requests/${requestId}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify({ status }),
+  })
+
+  const result = await res.json()
+
+  if (!result.success) {
+    return { error: result.error ?? "Something went wrong. Please try again." }
+  }
+
+  revalidatePath("/dashboard/landlord")
+}
+
+export type CreatePropertyState = { error?: string } | undefined
+
+export async function createPropertyAction(
+  prevState: CreatePropertyState,
+  formData: FormData
+): Promise<CreatePropertyState> {
+  const title = formData.get("title")
+  const description = formData.get("description")
+  const location = formData.get("location")
+  const price = formData.get("price")
+  const categoryName = formData.get("categoryName")
+
+  if (!title || !description || !location || !price || !categoryName) {
+    return { error: "Please fill in every field." }
+  }
+
+  const cookieStore = await cookies()
+  const accessToken = cookieStore.get("accessToken")?.value
+
+  const res = await fetch(`${process.env.BACKEND_API_URL}/api/landlord/properties`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify({ title, description, location, price, categoryName }),
+  })
+
+  const result = await res.json()
+
+  if (!result.success) {
+    return { error: result.error ?? "Could not create the property. Please try again." }
+  }
+
+  revalidatePath("/dashboard/landlord")
+  redirect("/dashboard/landlord")
+}

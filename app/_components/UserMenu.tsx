@@ -1,7 +1,8 @@
 "use client"
 
 import { useTransition } from "react"
-import { CaretDownIcon, SignOutIcon } from "@phosphor-icons/react"
+import Link from "next/link"
+import { CaretDownIcon, SquaresFourIcon, SignOutIcon } from "@phosphor-icons/react"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import {
@@ -17,6 +18,12 @@ interface CurrentUser {
   name: string
   email: string
   role: "TENANT" | "LANDLORD" | "ADMIN"
+}
+
+const dashboardPathByRole: Record<CurrentUser["role"], string> = {
+  TENANT: "/dashboard/tenant",
+  LANDLORD: "/dashboard/landlord",
+  ADMIN: "/dashboard/admin",
 }
 
 function initials(name: string) {
@@ -57,6 +64,15 @@ export function UserMenu({ user }: { user: CurrentUser }) {
             {user.role}
           </Badge>
         </div>
+
+        <DropdownMenuSeparator />
+
+        <DropdownMenuItem asChild>
+          <Link href={dashboardPathByRole[user.role]}>
+            <SquaresFourIcon size={16} />
+            Dashboard
+          </Link>
+        </DropdownMenuItem>
 
         <DropdownMenuSeparator />
 
