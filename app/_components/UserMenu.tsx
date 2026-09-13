@@ -22,7 +22,7 @@ interface CurrentUser {
 
 const dashboardPathByRole: Record<CurrentUser["role"], string> = {
   TENANT: "/dashboard/tenant",
-  LANDLORD: "/dashboard/landlord",
+  LANDLORD: "/dashboard/landlord/requests",
   ADMIN: "/dashboard/admin",
 }
 

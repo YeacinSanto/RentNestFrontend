@@ -1,8 +1,10 @@
 import Link from "next/link"
+import { cookies } from "next/headers"
 import { notFound } from "next/navigation"
 import { MapPinIcon } from "@phosphor-icons/react/ssr"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
+import { RequestRentalForm } from "@/app/(publicGroup)/_components/RequestRentalForm"
 
 interface Property {
   id: string
@@ -14,6 +16,17 @@ interface Property {
   createdAt: string
 }
 
+interface CurrentUser {
+  role: "TENANT" | "LANDLORD" | "ADMIN"
+}
+
+type RentalRequestStatus = "PENDING" | "APPROVED" | "REJECTED" | "COMPLETED"
+
+interface RentalRequest {
+  propertyId: string
+  status: RentalRequestStatus
+}
+
 async function getProperty(id: string): Promise<Property | null> {
   const res = await fetch(`${process.env.BACKEND_API_URL}/api/properties/${id}`, {
     cache: "no-store",
@@ -23,19 +36,58 @@ async function getProperty(id: string): Promise<Property | null> {
   return result.success ? result.data : null
 }
 
+async function getCurrentUser(accessToken: string): Promise<CurrentUser | null> {
+  const res = await fetch(`${process.env.BACKEND_API_URL}/api/auth/me`, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+    cache: "no-store",
+  })
+
+  const result = await res.json()
+  return result.success ? result.data : null
+}
+
+async function getMyRentalRequests(accessToken: string): Promise<RentalRequest[]> {
+  const res = await fetch(`${process.env.BACKEND_API_URL}/api/rentals`, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+    cache: "no-store",
+  })
+
+  const result = await res.json()
+  return result.success ? result.data.result : []
+}
+
 const statusVariant = {
   AVAILABLE: "default",
   RENTED: "secondary",
   UNAVAILABLE: "secondary",
 } as const
 
+const requestStatusVariant = {
+  PENDING: "secondary",
+  APPROVED: "default",
+  REJECTED: "destructive",
+  COMPLETED: "outline",
+} as const
+
 export default async function PropertyDetailPage({ params }: PageProps<"/properties/[id]">) {
   const { id } = await params
-  const property = await getProperty(id)
+  const cookieStore = await cookies()
+  const accessToken = cookieStore.get("accessToken")?.value
+
+  const [property, user] = await Promise.all([
+    getProperty(id),
+    accessToken ? getCurrentUser(accessToken) : Promise.resolve(null),
+  ])
 
   if (!property) {
     notFound()
   }
+
+  const myRequests =
+    user?.role === "TENANT" && accessToken ? await getMyRentalRequests(accessToken) : []
+  const existingRequest = myRequests.find(
+    (request) => request.propertyId === property.id && request.status !== "REJECTED"
+  )
 
   const price = Number.parseFloat(property.price)
 
@@ -74,6 +126,28 @@ export default async function PropertyDetailPage({ params }: PageProps<"/propert
                 Description
               </h2>
               <p className="leading-relaxed whitespace-pre-line text-foreground">{property.description}</p>
+            </div>
+
+            <div className="border-t border-border pt-6">
+              {property.status !== "AVAILABLE" ? (
+                <p className="text-sm text-muted-foreground">This property isn&apos;t available to rent right now.</p>
+              ) : !user ? (
+                <p className="text-sm text-muted-foreground">
+                  <Link href="/login" className="font-medium text-foreground underline underline-offset-4">
+                    Log in
+                  </Link>{" "}
+                  as a tenant to request to rent this property.
+                </p>
+              ) : user.role !== "TENANT" ? (
+                <p className="text-sm text-muted-foreground">Only tenants can request to rent properties.</p>
+              ) : existingRequest ? (
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-muted-foreground">You&apos;ve already requested this property —</span>
+                  <Badge variant={requestStatusVariant[existingRequest.status]}>{existingRequest.status}</Badge>
+                </div>
+              ) : (
+                <RequestRentalForm propertyId={property.id} />
+              )}
             </div>
           </CardContent>
         </Card>

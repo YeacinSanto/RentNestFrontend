@@ -54,7 +54,7 @@ export const loginAction = async (prevState : LoginState , formData: FormData) :
 
         const dashboardByRole : Record<string, string> = {
             TENANT : "/dashboard/tenant",
-            LANDLORD : "/dashboard/landlord",
+            LANDLORD : "/dashboard/landlord/requests",
             ADMIN : "/dashboard/admin",
         }
 

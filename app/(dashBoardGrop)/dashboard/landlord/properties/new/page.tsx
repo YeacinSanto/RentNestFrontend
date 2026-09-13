@@ -31,7 +31,7 @@ export default async function NewPropertyPage() {
   return (
     <div className="mx-auto w-full max-w-2xl flex-1 px-4 py-10 sm:px-6 lg:px-8">
       <Link
-        href="/dashboard/landlord"
+        href="/dashboard/landlord/requests"
         className="inline-flex items-center gap-1 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
       >
         ← Back to dashboard

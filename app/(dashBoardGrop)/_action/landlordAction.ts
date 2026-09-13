@@ -31,7 +31,7 @@ export async function updateRentalRequestStatusAction(
     return { error: result.error ?? "Something went wrong. Please try again." }
   }
 
-  revalidatePath("/dashboard/landlord")
+  revalidatePath("/dashboard/landlord/requests")
 }
 
 export type CreatePropertyState = { error?: string } | undefined
@@ -68,6 +68,6 @@ export async function createPropertyAction(
     return { error: result.error ?? "Could not create the property. Please try again." }
   }
 
-  revalidatePath("/dashboard/landlord")
-  redirect("/dashboard/landlord")
+  revalidatePath("/dashboard/landlord/requests")
+  redirect("/dashboard/landlord/requests")
 }
