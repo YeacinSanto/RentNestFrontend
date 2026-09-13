@@ -3,6 +3,7 @@ import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { DeletePropertyButton } from "@/app/(dashBoardGrop)/_components/DeletePropertyButton"
 
 interface CurrentUser {
   id: string
@@ -107,12 +108,15 @@ export default async function LandlordPropertiesPage() {
                       <Badge variant={statusVariant[property.status]}>{property.status}</Badge>
                     </td>
                     <td className="px-4 py-3 text-right">
-                      <Link
-                        href={`/properties/${property.id}`}
-                        className="font-medium text-primary underline underline-offset-4"
-                      >
-                        View
-                      </Link>
+                      <div className="flex items-center justify-end gap-3">
+                        <Link
+                          href={`/properties/${property.id}`}
+                          className="font-medium text-primary underline underline-offset-4"
+                        >
+                          View
+                        </Link>
+                        <DeletePropertyButton propertyId={property.id} />
+                      </div>
                     </td>
                   </tr>
                 )

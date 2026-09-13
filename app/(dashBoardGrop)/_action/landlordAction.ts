@@ -71,3 +71,30 @@ export async function createPropertyAction(
   revalidatePath("/dashboard/landlord/requests")
   redirect("/dashboard/landlord/requests")
 }
+
+export type DeletePropertyState = { error?: string } | undefined
+
+export async function deletePropertyAction(
+  prevState: DeletePropertyState,
+  formData: FormData
+): Promise<DeletePropertyState> {
+  const propertyId = formData.get("propertyId")
+
+  const cookieStore = await cookies()
+  const accessToken = cookieStore.get("accessToken")?.value
+
+  const res = await fetch(`${process.env.BACKEND_API_URL}/api/landlord/properties/${propertyId}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+
+  const result = await res.json()
+
+  if (!result.success) {
+    return { error: result.error ?? "Could not delete the listing. Please try again." }
+  }
+
+  revalidatePath("/dashboard/landlord/properties")
+}
