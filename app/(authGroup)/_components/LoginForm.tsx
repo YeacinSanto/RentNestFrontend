@@ -1,7 +1,8 @@
 "use client"
 
 import Link from "next/link"
-import { useActionState, useState } from "react"
+import { useActionState, useEffect, useState } from "react"
+import { toast } from "sonner"
 import { EyeIcon, EyeSlashIcon, HouseLineIcon, WarningCircleIcon } from "@phosphor-icons/react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -12,6 +13,10 @@ import { loginAction } from "../_action/authAction"
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [state, formAction, pending] = useActionState(loginAction, undefined)
+
+  useEffect(() => {
+    if (state?.error) toast.error(state.error)
+  }, [state?.error])
 
   return (
     <Card className="w-full max-w-sm">

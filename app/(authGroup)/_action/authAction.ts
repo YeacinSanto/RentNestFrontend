@@ -53,9 +53,9 @@ export const loginAction = async (prevState : LoginState , formData: FormData) :
         const me = await meRes.json();
 
         const dashboardByRole : Record<string, string> = {
-            TENANT : "/dashboard/tenant",
-            LANDLORD : "/dashboard/landlord/requests",
-            ADMIN : "/dashboard/admin",
+            TENANT : "/dashboard/tenant?welcome=1",
+            LANDLORD : "/dashboard/landlord/requests?welcome=1",
+            ADMIN : "/dashboard/admin?welcome=1",
         }
 
         redirect(me.success ? dashboardByRole[me.data.role] : "/")
@@ -96,7 +96,7 @@ export const registerAction = async (prevState : RegisterState , formData: FormD
     const result = await res.json();
 
     if(result.success){
-        redirect("/login")
+        redirect("/login?registered=1")
     }
 
     return result
@@ -108,5 +108,5 @@ export const logoutAction = async () => {
     cookieStore.delete("accessToken")
     cookieStore.delete("refreshToken")
 
-    redirect("/")
+    redirect("/?loggedOut=1")
 }

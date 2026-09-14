@@ -1,6 +1,7 @@
 "use client"
 
-import { useActionState } from "react"
+import { useActionState, useEffect } from "react"
+import { toast } from "sonner"
 import { WarningCircleIcon } from "@phosphor-icons/react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -15,6 +16,10 @@ interface Category {
 
 export function CreatePropertyForm({ categories }: { categories: Category[] }) {
   const [state, formAction, pending] = useActionState(createPropertyAction, undefined)
+
+  useEffect(() => {
+    if (state?.error) toast.error(state.error)
+  }, [state?.error])
 
   return (
     <form action={formAction} className="flex flex-col gap-4">

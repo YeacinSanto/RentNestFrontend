@@ -29,7 +29,7 @@ export async function requestRentalAction(
     return { error: result.error ?? "Could not submit your request. Please try again." }
   }
 
-  redirect("/dashboard/tenant")
+  redirect("/dashboard/tenant?requested=1")
 }
 
 export type InitiatePaymentState = { error?: string } | undefined

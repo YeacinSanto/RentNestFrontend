@@ -1,6 +1,7 @@
 "use client"
 
-import { useActionState, useState } from "react"
+import { useActionState, useEffect, useState } from "react"
+import { toast } from "sonner"
 import { StarIcon, WarningCircleIcon } from "@phosphor-icons/react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
@@ -10,6 +11,11 @@ export function ReviewForm({ propertyId }: { propertyId: string }) {
   const [open, setOpen] = useState(false)
   const [rating, setRating] = useState(0)
   const [state, formAction, pending] = useActionState(createReviewAction, undefined)
+
+  useEffect(() => {
+    if (state?.success) toast.success("Thanks for your review!")
+    if (state?.error) toast.error(state.error)
+  }, [state?.success, state?.error])
 
   if (state?.success) {
     return <p className="text-sm font-medium text-primary">Thanks for your review!</p>

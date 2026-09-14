@@ -1,12 +1,17 @@
 "use client"
 
-import { useActionState } from "react"
+import { useActionState, useEffect } from "react"
+import { toast } from "sonner"
 import { WarningCircleIcon } from "@phosphor-icons/react"
 import { Button } from "@/components/ui/button"
 import { requestRentalAction } from "@/app/(dashBoardGrop)/_action/tenantAction"
 
 export function RequestRentalForm({ propertyId }: { propertyId: string }) {
   const [state, formAction, pending] = useActionState(requestRentalAction, undefined)
+
+  useEffect(() => {
+    if (state?.error) toast.error(state.error)
+  }, [state?.error])
 
   return (
     <form action={formAction} className="flex flex-col gap-2">

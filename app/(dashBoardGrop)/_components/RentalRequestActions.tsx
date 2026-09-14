@@ -1,6 +1,7 @@
 "use client"
 
-import { useActionState } from "react"
+import { useActionState, useEffect } from "react"
+import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { updateRentalRequestStatusAction } from "../_action/landlordAction"
 
@@ -8,6 +9,11 @@ type Status = "PENDING" | "APPROVED" | "REJECTED" | "COMPLETED"
 
 export function RentalRequestActions({ requestId, status }: { requestId: string; status: Status }) {
   const [state, formAction, pending] = useActionState(updateRentalRequestStatusAction, undefined)
+
+  useEffect(() => {
+    if (state?.success) toast.success("Request updated.")
+    if (state?.error) toast.error(state.error)
+  }, [state?.success, state?.error])
 
   if (status === "REJECTED" || status === "COMPLETED") {
     return <span className="text-xs text-muted-foreground">No actions available</span>

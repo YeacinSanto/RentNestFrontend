@@ -3,6 +3,7 @@ import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
 import { Badge } from "@/components/ui/badge"
 import { ReviewForm } from "@/app/(dashBoardGrop)/_components/ReviewForm"
+import { ActionToast } from "@/app/_components/ActionToast"
 
 interface RentalRequest {
   id: string
@@ -90,6 +91,12 @@ export default async function TenantDashboardPage() {
 
   return (
     <div className="mx-auto w-full max-w-4xl flex-1 px-4 py-10 sm:px-6 lg:px-8">
+      <ActionToast
+        toasts={[
+          { param: "welcome", type: "success", message: "Welcome back!" },
+          { param: "requested", type: "success", message: "Rental request sent." },
+        ]}
+      />
       <h1 className="font-heading text-2xl font-semibold tracking-tight text-foreground">Your rental requests</h1>
       <p className="mt-1 text-sm text-muted-foreground">
         Track the status of every property you&apos;ve requested to rent.

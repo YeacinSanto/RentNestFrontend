@@ -1,5 +1,6 @@
 import { PropertyCard } from "@/app/_components/PropertyCard"
 import { PropertyFilters } from "@/app/_components/PropertyFilters"
+import { ActionToast } from "@/app/_components/ActionToast"
 
 interface Category {
   id: string
@@ -66,6 +67,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
 
   return (
     <div className="flex flex-1 flex-col">
+      <ActionToast toasts={[{ param: "loggedOut", type: "success", message: "Logged out." }]} />
       <section className="border-b border-border bg-linear-to-b from-primary/10 to-transparent">
         <div className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
           <p className="text-sm font-medium tracking-wide text-primary uppercase">Available now</p>

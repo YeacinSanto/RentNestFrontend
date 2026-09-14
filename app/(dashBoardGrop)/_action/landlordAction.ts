@@ -4,7 +4,7 @@ import { cookies } from "next/headers"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 
-export type RentalStatusActionState = { error?: string } | undefined
+export type RentalStatusActionState = { success?: boolean; error?: string } | undefined
 
 export async function updateRentalRequestStatusAction(
   prevState: RentalStatusActionState,
@@ -32,6 +32,7 @@ export async function updateRentalRequestStatusAction(
   }
 
   revalidatePath("/dashboard/landlord/requests")
+  return { success: true }
 }
 
 export type CreatePropertyState = { error?: string } | undefined
@@ -68,11 +69,11 @@ export async function createPropertyAction(
     return { error: result.error ?? "Could not create the property. Please try again." }
   }
 
-  revalidatePath("/dashboard/landlord/requests")
-  redirect("/dashboard/landlord/requests")
+  revalidatePath("/dashboard/landlord/properties")
+  redirect("/dashboard/landlord/properties?created=1")
 }
 
-export type DeletePropertyState = { error?: string } | undefined
+export type DeletePropertyState = { success?: boolean; error?: string } | undefined
 
 export async function deletePropertyAction(
   prevState: DeletePropertyState,
@@ -97,4 +98,5 @@ export async function deletePropertyAction(
   }
 
   revalidatePath("/dashboard/landlord/properties")
+  return { success: true }
 }

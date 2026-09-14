@@ -1,12 +1,17 @@
 "use client"
 
-import { useActionState } from "react"
+import { useActionState, useEffect } from "react"
+import { toast } from "sonner"
 import { WarningCircleIcon } from "@phosphor-icons/react"
 import { Button } from "@/components/ui/button"
 import { initiatePaymentAction } from "../_action/tenantAction"
 
 export function PayButton({ rentalRequestId }: { rentalRequestId: string }) {
   const [state, formAction, pending] = useActionState(initiatePaymentAction, undefined)
+
+  useEffect(() => {
+    if (state?.error) toast.error(state.error)
+  }, [state?.error])
 
   return (
     <form action={formAction} className="flex flex-col gap-2">

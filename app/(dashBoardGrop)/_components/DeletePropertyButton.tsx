@@ -1,12 +1,18 @@
 "use client"
 
-import { useActionState } from "react"
+import { useActionState, useEffect } from "react"
+import { toast } from "sonner"
 import { WarningCircleIcon } from "@phosphor-icons/react"
 import { Button } from "@/components/ui/button"
 import { deletePropertyAction } from "../_action/landlordAction"
 
 export function DeletePropertyButton({ propertyId }: { propertyId: string }) {
   const [state, formAction, pending] = useActionState(deletePropertyAction, undefined)
+
+  useEffect(() => {
+    if (state?.success) toast.success("Listing deleted.")
+    if (state?.error) toast.error(state.error)
+  }, [state?.success, state?.error])
 
   return (
     <form
