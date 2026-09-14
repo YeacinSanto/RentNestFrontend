@@ -10,10 +10,16 @@ type Status = "PENDING" | "APPROVED" | "REJECTED" | "COMPLETED"
 export function RentalRequestActions({ requestId, status }: { requestId: string; status: Status }) {
   const [state, formAction, pending] = useActionState(updateRentalRequestStatusAction, undefined)
 
+  const successMessage = {
+    APPROVED: "Request approved.",
+    REJECTED: "Request rejected.",
+    COMPLETED: "Marked as completed.",
+  } as const
+
   useEffect(() => {
-    if (state?.success) toast.success("Request updated.")
+    if (state?.success && state.status) toast.success(successMessage[state.status])
     if (state?.error) toast.error(state.error)
-  }, [state?.success, state?.error])
+  }, [state?.success, state?.error, state?.status])
 
   if (status === "REJECTED" || status === "COMPLETED") {
     return <span className="text-xs text-muted-foreground">No actions available</span>

@@ -3,6 +3,7 @@ import { cookies } from "next/headers"
 import { HouseLineIcon } from "@phosphor-icons/react/ssr"
 import { Button } from "@/components/ui/button"
 import { UserMenu } from "@/app/_components/UserMenu"
+import { ThemeToggle } from "@/app/_components/ThemeToggle"
 
 interface CurrentUser {
   id: string
@@ -41,18 +42,21 @@ export async function Navbar() {
           RentNest
         </Link>
 
-        {user ? (
-          <UserMenu user={user} />
-        ) : (
-          <div className="flex items-center gap-2">
-            <Button asChild variant="ghost" size="sm">
-              <Link href="/login">Log in</Link>
-            </Button>
-            <Button asChild size="sm">
-              <Link href="/register">Sign up</Link>
-            </Button>
-          </div>
-        )}
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          {user ? (
+            <UserMenu user={user} />
+          ) : (
+            <>
+              <Button asChild variant="ghost" size="sm">
+                <Link href="/login">Log in</Link>
+              </Button>
+              <Button asChild size="sm">
+                <Link href="/register">Sign up</Link>
+              </Button>
+            </>
+          )}
+        </div>
       </div>
     </header>
   )

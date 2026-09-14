@@ -4,14 +4,16 @@ import { cookies } from "next/headers"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 
-export type RentalStatusActionState = { success?: boolean; error?: string } | undefined
+export type RentalStatusActionState =
+  | { success?: boolean; status?: "APPROVED" | "REJECTED" | "COMPLETED"; error?: string }
+  | undefined
 
 export async function updateRentalRequestStatusAction(
   prevState: RentalStatusActionState,
   formData: FormData
 ): Promise<RentalStatusActionState> {
   const requestId = formData.get("requestId")
-  const status = formData.get("status")
+  const status = formData.get("status") as "APPROVED" | "REJECTED" | "COMPLETED"
 
   const cookieStore = await cookies()
   const accessToken = cookieStore.get("accessToken")?.value
@@ -32,7 +34,7 @@ export async function updateRentalRequestStatusAction(
   }
 
   revalidatePath("/dashboard/landlord/requests")
-  return { success: true }
+  return { success: true, status }
 }
 
 export type CreatePropertyState = { error?: string } | undefined
