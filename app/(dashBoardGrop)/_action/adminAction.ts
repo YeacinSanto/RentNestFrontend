@@ -31,7 +31,7 @@ export async function updateUserStatusAction(
     return { error: result.error ?? "Could not update the user. Please try again." }
   }
 
-  revalidatePath("/dashboard/admin")
+  revalidatePath("/dashboard/admin/users")
   return { success: true }
 }
 

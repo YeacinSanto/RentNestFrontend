@@ -38,7 +38,7 @@ export default async function AdminCategoriesPage() {
         href="/dashboard/admin"
         className="inline-flex items-center gap-1 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
       >
-        ← Back to users
+        ← Back to overview
       </Link>
 
       <div className="mt-6 rounded-4xl border border-border">
