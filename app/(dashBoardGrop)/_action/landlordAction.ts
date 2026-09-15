@@ -33,6 +33,21 @@ export async function updateRentalRequestStatusAction(
     return { error: result.error ?? "Something went wrong. Please try again." }
   }
 
+  if (status === "COMPLETED") {
+    const propertyId = result.data.propertyId
+
+    await fetch(`${process.env.BACKEND_API_URL}/api/landlord/properties/${propertyId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ status: "AVAILABLE" }),
+    })
+
+    revalidatePath("/dashboard/landlord/properties")
+  }
+
   revalidatePath("/dashboard/landlord/requests")
   return { success: true, status }
 }

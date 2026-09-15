@@ -35,6 +35,7 @@ browser directly. Base URL: `BACKEND_API_URL`
 | `POST /landlord/properties` | `landlordAction.ts` (`createPropertyAction`) | `CreatePropertyForm.tsx` |
 | `GET /landlord/properties` | `dashboard/landlord/properties/page.tsx` | "My listings" — the landlord's own properties, any status |
 | `PUT /landlord/properties/:id` | `landlordAction.ts` (`updatePropertyAction`) | `EditPropertyForm.tsx` — edit title/description/location/price and availability status |
+| `PUT /landlord/properties/:id` | `landlordAction.ts` (`updateRentalRequestStatusAction`) | called automatically right after a rental request is marked `COMPLETED`, resetting the property back to `AVAILABLE` so it's listed for new tenants again — the backend doesn't do this on its own |
 | `DELETE /landlord/properties/:id` | `landlordAction.ts` (`deletePropertyAction`) | `DeletePropertyButton.tsx` |
 | `POST /landlord/properties/:id/images` | `landlordAction.ts` (`uploadPropertyImagesAction`) | `PropertyPhotosManager.tsx` |
 | `GET /landlord/requests` | `dashboard/landlord/requests/page.tsx` | "Manage incoming requests" table |
