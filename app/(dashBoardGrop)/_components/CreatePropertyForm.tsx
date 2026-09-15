@@ -60,11 +60,11 @@ export function CreatePropertyForm({ categories }: { categories: Category[] }) {
           required
           className="h-9 rounded-3xl border border-transparent bg-input/50 px-3 text-sm text-foreground outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/30"
         >
-          <option value="" disabled>
+          <option value="" disabled className="bg-background text-foreground">
             Select a type
           </option>
           {categories.map((category) => (
-            <option key={category.id} value={category.name}>
+            <option key={category.id} value={category.name} className="bg-background text-foreground">
               {category.name}
             </option>
           ))}
