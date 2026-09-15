@@ -4,6 +4,7 @@ import { HouseLineIcon } from "@phosphor-icons/react/ssr"
 import { Button } from "@/components/ui/button"
 import { UserMenu } from "@/app/_components/UserMenu"
 import { ThemeToggle } from "@/app/_components/ThemeToggle"
+import { MobileNav } from "@/app/_components/MobileNav"
 
 interface CurrentUser {
   id: string
@@ -45,13 +46,13 @@ export async function Navbar() {
 
           <Link
             href="/properties"
-            className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+            className="hidden text-sm font-medium text-muted-foreground transition-colors hover:text-foreground sm:inline"
           >
             Properties
           </Link>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="hidden items-center gap-2 sm:flex">
           <ThemeToggle />
           {user ? (
             <UserMenu user={user} />
@@ -65,6 +66,10 @@ export async function Navbar() {
               </Button>
             </>
           )}
+        </div>
+
+        <div className="sm:hidden">
+          <MobileNav user={user} />
         </div>
       </div>
     </header>
