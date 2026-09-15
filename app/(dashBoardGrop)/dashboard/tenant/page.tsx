@@ -196,6 +196,7 @@ export default async function TenantDashboardPage() {
                 <th className="px-4 py-3 font-medium">Amount</th>
                 <th className="px-4 py-3 font-medium">Paid on</th>
                 <th className="px-4 py-3 font-medium">Status</th>
+                <th className="px-4 py-3 font-medium"></th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
@@ -215,6 +216,14 @@ export default async function TenantDashboardPage() {
                     </td>
                     <td className="px-4 py-3">
                       <Badge variant={paymentStatusVariant[payment.status]}>{payment.status}</Badge>
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      <Link
+                        href={`/dashboard/tenant/payments/${payment.id}`}
+                        className="font-medium text-primary underline underline-offset-4"
+                      >
+                        View
+                      </Link>
                     </td>
                   </tr>
                 )

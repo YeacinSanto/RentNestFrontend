@@ -75,6 +75,45 @@ export async function createPropertyAction(
   redirect("/dashboard/landlord/properties?created=1")
 }
 
+export type UpdatePropertyState = { error?: string } | undefined
+
+export async function updatePropertyAction(
+  prevState: UpdatePropertyState,
+  formData: FormData
+): Promise<UpdatePropertyState> {
+  const propertyId = formData.get("propertyId")
+  const title = formData.get("title")
+  const description = formData.get("description")
+  const location = formData.get("location")
+  const price = formData.get("price")
+  const status = formData.get("status")
+
+  if (!title || !description || !location || !price || !status) {
+    return { error: "Please fill in every field." }
+  }
+
+  const cookieStore = await cookies()
+  const accessToken = cookieStore.get("accessToken")?.value
+
+  const res = await fetch(`${process.env.BACKEND_API_URL}/api/landlord/properties/${propertyId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify({ title, description, location, price, status }),
+  })
+
+  const result = await res.json()
+
+  if (!result.success) {
+    return { error: result.error ?? "Could not update the listing. Please try again." }
+  }
+
+  revalidatePath("/dashboard/landlord/properties")
+  redirect("/dashboard/landlord/properties?updated=1")
+}
+
 export type DeletePropertyState = { success?: boolean; error?: string } | undefined
 
 export async function deletePropertyAction(

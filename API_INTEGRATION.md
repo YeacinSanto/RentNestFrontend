@@ -1,11 +1,7 @@
 # API Integration
 
 Every backend call in this app goes through a Server Component or Server Action — never the
-browser directly (the one exception, photo upload, is still a Server Action, just forwarding
-`multipart/form-data` instead of JSON). There's no shared request wrapper: each action/page
-reads the `accessToken` httpOnly cookie itself and attaches it as `Authorization: Bearer
-<token>` on the backend call. There's no token refresh, since the backend issues a
-`refreshToken` but has no endpoint that accepts it yet. Base URL: `BACKEND_API_URL`
+browser directly. Base URL: `BACKEND_API_URL`
 (server-only env var, see `.env.local`).
 
 ## Auth
@@ -17,7 +13,7 @@ reads the `accessToken` httpOnly cookie itself and attaches it as `Authorization
 | `GET /auth/me` | `Navbar.tsx`, `proxy.ts` (route guard) | every page load, for session/role checks |
 | `GET /auth/me` | `properties/[id]/page.tsx`, `dashboard/landlord/properties/page.tsx`, `dashboard/landlord/properties/[id]/photos/page.tsx`, `dashboard/profile/page.tsx` | role/ownership checks, and pre-filling the profile form |
 | `PATCH /auth/me` | `authAction.ts` (`updateProfileAction`) | `UpdateProfileForm.tsx` — update name and/or change password; email is immutable |
-| *(none — cookies cleared locally)* | `authAction.ts` (`logoutAction`) | `UserMenu.tsx`, `MobileNav.tsx` |
+
 
 ## Properties (public)
 
@@ -38,7 +34,7 @@ reads the `accessToken` httpOnly cookie itself and attaches it as `Authorization
 | Endpoint | Server action | Used by |
 |---|---|---|
 | `POST /landlord/properties` | `landlordAction.ts` (`createPropertyAction`) | `CreatePropertyForm.tsx` |
-| `PUT /landlord/properties/:id` | *(not yet consumed)* | no edit-listing UI has been built |
+| `PUT /landlord/properties/:id` | `landlordAction.ts` (`updatePropertyAction`) | `EditPropertyForm.tsx` — edit title/description/location/price and availability status |
 | `DELETE /landlord/properties/:id` | `landlordAction.ts` (`deletePropertyAction`) | `DeletePropertyButton.tsx` |
 | `POST /landlord/properties/:id/images` | `landlordAction.ts` (`uploadPropertyImagesAction`) | `PropertyPhotosManager.tsx` |
 | `GET /landlord/requests` | `dashboard/landlord/requests/page.tsx` | "Manage incoming requests" table |
@@ -60,6 +56,7 @@ reads the `accessToken` httpOnly cookie itself and attaches it as `Authorization
 | `POST /payments` | `tenantAction.ts` (`initiatePaymentAction`) | `PayButton.tsx` — redirects the browser to the returned Stripe Checkout URL |
 | `GET /payments` | `dashboard/tenant/page.tsx` | payment history table + per-request "Pay now / Payment pending / Paid" status |
 | `GET /payments` | `dashboard/tenant/requests/[id]/pay/page.tsx` | checks for an existing payment before showing the pay button again |
+| `GET /payments/:id` | `dashboard/tenant/payments/[id]/page.tsx` | payment detail page (amount, provider, method, transaction id, timestamps) — linked from a "View" link on the payment history table |
 
 Stripe's own webhook (`checkout.session.completed`) is handled entirely server-side by the
 backend — the frontend's `/payment/success` and `/payment/cancel` pages are static
@@ -87,11 +84,3 @@ review-display UI anywhere in the app — a review is write-only from the fronte
 | `GET /admin/properties` | `dashboard/admin/page.tsx` | overview page's "Total properties" stat card |
 | `GET /admin/rentals` | `dashboard/admin/rentals/page.tsx` | full platform rental request list |
 | `GET /admin/rentals` | `dashboard/admin/page.tsx` | overview page's "Pending requests" stat card (filtered client-side, since there's no count endpoint) |
-
-## Known gaps
-
-- **No by-property review listing.** A tenant can submit one review per completed rental, but it can never be displayed anywhere — there's no `GET /reviews` or `GET /reviews/property/:id`.
-- **`PUT /landlord/properties/:id` (edit a listing) is fully documented but unconsumed.** No edit-listing UI exists yet — only create and delete.
-- **No landlord-scoped "my properties" endpoint.** `dashboard/landlord/properties/page.tsx` fakes it by fetching the public `GET /properties` list and filtering by `landlordId`, which means a landlord's `RENTED`/`UNAVAILABLE` listings are invisible to them in that view (the public endpoint only returns `AVAILABLE` properties).
-- **No rental-request cancellation for tenants**, and **no per-image delete for property photos** — removing a photo means deleting the entire listing.
-- **No logout or refresh-token endpoint.** `logoutAction` just clears cookies client-side; a `refreshToken` is issued at login but nothing on the backend accepts it back.
