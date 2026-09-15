@@ -262,6 +262,15 @@
     {
       "group": "Landlord",
       "method": "GET",
+      "path": "/landlord/properties",
+      "auth": "LANDLORD",
+      "successStatus": 200,
+      "responseData": "Property[] (all statuses - AVAILABLE, RENTED, UNAVAILABLE - with category included), scoped to the calling landlord via the JWT",
+      "notes": "Added so a landlord can see their own non-AVAILABLE listings, which the public GET /properties can't show (AVAILABLE-only)."
+    },
+    {
+      "group": "Landlord",
+      "method": "GET",
       "path": "/landlord/requests",
       "auth": "LANDLORD",
       "successStatus": 200,

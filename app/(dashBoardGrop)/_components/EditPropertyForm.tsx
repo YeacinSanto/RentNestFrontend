@@ -78,11 +78,6 @@ export function EditPropertyForm({ property }: { property: Property }) {
             Unavailable
           </option>
         </select>
-        <p className="text-xs text-muted-foreground">
-          Switching away from Available will hide this listing from &quot;My listings&quot; — there&apos;s
-          currently no way to find it again to switch it back, since the platform has no endpoint yet to
-          list a landlord&apos;s non-available properties.
-        </p>
       </div>
 
       {state?.error && (

@@ -6,32 +6,18 @@ import { Button } from "@/components/ui/button"
 import { DeletePropertyButton } from "@/app/(dashBoardGrop)/_components/DeletePropertyButton"
 import { ActionToast } from "@/app/_components/ActionToast"
 
-interface CurrentUser {
-  id: string
-}
-
 interface Property {
   id: string
   title: string
   location: string
   price: string
   status: "AVAILABLE" | "RENTED" | "UNAVAILABLE"
-  landlordId: string
   category?: { id: string; name: string }
 }
 
-async function getCurrentUser(accessToken: string): Promise<CurrentUser | null> {
-  const res = await fetch(`${process.env.BACKEND_API_URL}/api/auth/me`, {
+async function getMyProperties(accessToken: string): Promise<Property[]> {
+  const res = await fetch(`${process.env.BACKEND_API_URL}/api/landlord/properties`, {
     headers: { Authorization: `Bearer ${accessToken}` },
-    cache: "no-store",
-  })
-
-  const result = await res.json()
-  return result.success ? result.data : null
-}
-
-async function getAvailableProperties(): Promise<Property[]> {
-  const res = await fetch(`${process.env.BACKEND_API_URL}/api/properties`, {
     cache: "no-store",
   })
 
@@ -53,9 +39,7 @@ export default async function LandlordPropertiesPage() {
     redirect("/login")
   }
 
-  const user = await getCurrentUser(accessToken)
-  const allAvailableProperties = await getAvailableProperties()
-  const myProperties = user ? allAvailableProperties.filter((property) => property.landlordId === user.id) : []
+  const myProperties = await getMyProperties(accessToken)
 
   return (
     <div className="mx-auto w-full max-w-4xl flex-1 px-4 py-10 sm:px-6 lg:px-8">
@@ -80,14 +64,9 @@ export default async function LandlordPropertiesPage() {
         </div>
       </div>
 
-      <div className="mt-4 rounded-2xl bg-muted/50 px-4 py-3 text-xs text-muted-foreground">
-        Only <span className="font-medium">available</span> listings can be shown here right now — the API has no
-        endpoint yet to fetch a landlord&apos;s rented or unavailable properties.
-      </div>
-
       {myProperties.length === 0 ? (
         <div className="mt-8 flex flex-col items-center justify-center gap-2 rounded-4xl border border-dashed border-border py-24 text-center">
-          <p className="text-sm text-muted-foreground">You haven&apos;t listed any available properties yet.</p>
+          <p className="text-sm text-muted-foreground">You haven&apos;t listed any properties yet.</p>
         </div>
       ) : (
         <div className="mt-8 overflow-x-auto rounded-4xl border border-border">

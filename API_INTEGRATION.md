@@ -20,7 +20,6 @@ browser directly. Base URL: `BACKEND_API_URL`
 | Endpoint | Server action | Used by |
 |---|---|---|
 | `GET /properties` | `app/page.tsx`, `properties/page.tsx` | homepage grid, `/properties` browse & filter |
-| `GET /properties` | `dashboard/landlord/properties/page.tsx` | landlord's "My listings" — filtered client-side by `landlordId`; no dedicated landlord-list endpoint exists, so only `AVAILABLE` listings show here |
 | `GET /properties/:id` | `properties/[id]/page.tsx` | property detail page + photo gallery |
 | `GET /properties/:id` | `dashboard/tenant/page.tsx`, `dashboard/landlord/requests/page.tsx` | resolving a property's title for each row in the tenant/landlord request tables |
 | `GET /properties/:id` | `dashboard/tenant/requests/[id]/pay/page.tsx` | payment initiation page |
@@ -34,6 +33,7 @@ browser directly. Base URL: `BACKEND_API_URL`
 | Endpoint | Server action | Used by |
 |---|---|---|
 | `POST /landlord/properties` | `landlordAction.ts` (`createPropertyAction`) | `CreatePropertyForm.tsx` |
+| `GET /landlord/properties` | `dashboard/landlord/properties/page.tsx` | "My listings" — the landlord's own properties, any status |
 | `PUT /landlord/properties/:id` | `landlordAction.ts` (`updatePropertyAction`) | `EditPropertyForm.tsx` — edit title/description/location/price and availability status |
 | `DELETE /landlord/properties/:id` | `landlordAction.ts` (`deletePropertyAction`) | `DeletePropertyButton.tsx` |
 | `POST /landlord/properties/:id/images` | `landlordAction.ts` (`uploadPropertyImagesAction`) | `PropertyPhotosManager.tsx` |
