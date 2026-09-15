@@ -2,6 +2,7 @@
 
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
+import { revalidatePath } from "next/cache"
 
 export type LoginState = {
     success : false,
@@ -100,6 +101,50 @@ export const registerAction = async (prevState : RegisterState , formData: FormD
     }
 
     return result
+}
+
+export type UpdateProfileState = {
+    success? : boolean,
+    error? : string
+} | undefined
+
+export const updateProfileAction = async (prevState : UpdateProfileState , formData: FormData) : Promise<UpdateProfileState> => {
+
+    const name = formData.get("name") as string
+    const currentPassword = formData.get("currentPassword") as string
+    const newPassword = formData.get("newPassword") as string
+
+    if(newPassword && !currentPassword){
+        return { error : "Enter your current password to set a new one." }
+    }
+
+    const payload: Record<string, string> = {}
+    if(name) payload.name = name
+    if(newPassword){
+        payload.currentPassword = currentPassword
+        payload.newPassword = newPassword
+    }
+
+    const cookieStore = await cookies()
+    const accessToken = cookieStore.get("accessToken")?.value
+
+    const res = await fetch(`${process.env.BACKEND_API_URL}/api/auth/me`, {
+        method : "PATCH",
+        headers : {
+            "Content-Type" : "application/json",
+            Authorization : `Bearer ${accessToken}`
+        },
+        body : JSON.stringify(payload)
+    });
+
+    const result = await res.json();
+
+    if(!result.success){
+        return { error : result.error ?? "Could not update your profile. Please try again." }
+    }
+
+    revalidatePath("/dashboard/profile")
+    return { success : true }
 }
 
 export const logoutAction = async () => {

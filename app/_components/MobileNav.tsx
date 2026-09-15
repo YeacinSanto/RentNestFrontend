@@ -2,7 +2,7 @@
 
 import { useTransition } from "react"
 import Link from "next/link"
-import { ListIcon, SquaresFourIcon, SignOutIcon } from "@phosphor-icons/react"
+import { ListIcon, SquaresFourIcon, UserCircleIcon, SignOutIcon } from "@phosphor-icons/react"
 import { Badge } from "@/components/ui/badge"
 import {
   DropdownMenu,
@@ -75,6 +75,12 @@ export function MobileNav({ user }: { user: CurrentUser | null }) {
               <Link href={dashboardPathByRole[user.role]}>
                 <SquaresFourIcon size={16} />
                 Dashboard
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href="/dashboard/profile">
+                <UserCircleIcon size={16} />
+                Profile
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem variant="destructive" disabled={isPending} onSelect={handleLogout}>

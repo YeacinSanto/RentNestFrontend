@@ -2,7 +2,7 @@
 
 import { useTransition } from "react"
 import Link from "next/link"
-import { CaretDownIcon, SquaresFourIcon, SignOutIcon } from "@phosphor-icons/react"
+import { CaretDownIcon, SquaresFourIcon, UserCircleIcon, SignOutIcon } from "@phosphor-icons/react"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import {
@@ -71,6 +71,13 @@ export function UserMenu({ user }: { user: CurrentUser }) {
           <Link href={dashboardPathByRole[user.role]}>
             <SquaresFourIcon size={16} />
             Dashboard
+          </Link>
+        </DropdownMenuItem>
+
+        <DropdownMenuItem asChild>
+          <Link href="/dashboard/profile">
+            <UserCircleIcon size={16} />
+            Profile
           </Link>
         </DropdownMenuItem>
 

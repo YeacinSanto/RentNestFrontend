@@ -61,6 +61,9 @@ app/
 - `/properties/[id]` — property detail, photo gallery, request-to-rent form (tenants only)
 - `/payment/success`, `/payment/cancel` — Stripe Checkout outcome pages
 
+**Any authenticated role**
+- `/dashboard/profile` — edit your own name and/or password (email is immutable)
+
 **Tenant** (`/dashboard/tenant`)
 - Rental request history with status badges, payment history, review form (gated to completed rentals)
 - `/dashboard/tenant/requests/[id]/pay` — Stripe payment initiation
