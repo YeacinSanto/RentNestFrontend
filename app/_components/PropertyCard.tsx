@@ -16,14 +16,18 @@ interface Property {
   location: string
   price: string
   category?: Category
+  images?: string[]
 }
 
 export function PropertyCard({ property }: { property: Property }) {
   const price = Number.parseFloat(property.price)
+  const thumbnail = property.images?.[0]
 
   return (
     <Link href={`/properties/${property.id}`} className="group block h-full">
       <Card className="h-full justify-between transition-all duration-200 group-hover:-translate-y-1 group-hover:shadow-xl">
+        {thumbnail && <img src={thumbnail} alt="" className="aspect-video w-full object-cover" />}
+
         <CardHeader className="gap-2">
           <div className="flex items-start justify-between gap-2">
             <CardTitle className="text-lg leading-snug">{property.title}</CardTitle>

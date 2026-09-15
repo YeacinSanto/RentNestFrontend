@@ -102,3 +102,33 @@ export async function deletePropertyAction(
   revalidatePath("/dashboard/landlord/properties")
   return { success: true }
 }
+
+export type UploadPropertyImagesState = { success?: boolean; images?: string[]; error?: string } | undefined
+
+export async function uploadPropertyImagesAction(
+  prevState: UploadPropertyImagesState,
+  formData: FormData
+): Promise<UploadPropertyImagesState> {
+  const propertyId = formData.get("propertyId")
+  formData.delete("propertyId")
+
+  const cookieStore = await cookies()
+  const accessToken = cookieStore.get("accessToken")?.value
+
+  const res = await fetch(`${process.env.BACKEND_API_URL}/api/landlord/properties/${propertyId}/images`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: formData,
+  })
+
+  const result = await res.json()
+
+  if (!result.success) {
+    return { error: result.error ?? "Could not upload photos. Please try again." }
+  }
+
+  revalidatePath(`/dashboard/landlord/properties/${propertyId}/photos`)
+  return { success: true, images: result.data.images ?? [] }
+}

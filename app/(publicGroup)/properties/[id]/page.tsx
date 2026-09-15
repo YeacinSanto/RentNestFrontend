@@ -5,6 +5,7 @@ import { MapPinIcon } from "@phosphor-icons/react/ssr"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { RequestRentalForm } from "@/app/(publicGroup)/_components/RequestRentalForm"
+import { PropertyGallery } from "@/app/(publicGroup)/_components/PropertyGallery"
 
 interface Property {
   id: string
@@ -13,6 +14,7 @@ interface Property {
   location: string
   price: string
   status: "AVAILABLE" | "RENTED" | "UNAVAILABLE"
+  images?: string[]
   createdAt: string
 }
 
@@ -103,6 +105,8 @@ export default async function PropertyDetailPage({ params }: PageProps<"/propert
 
         <Card className="mt-6">
           <CardContent className="flex flex-col gap-6">
+            <PropertyGallery images={property.images ?? []} title={property.title} />
+
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
                 <h1 className="font-heading text-3xl font-semibold tracking-tight text-foreground">

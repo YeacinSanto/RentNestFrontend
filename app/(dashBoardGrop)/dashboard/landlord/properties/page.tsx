@@ -117,6 +117,12 @@ export default async function LandlordPropertiesPage() {
                         >
                           View
                         </Link>
+                        <Link
+                          href={`/dashboard/landlord/properties/${property.id}/photos`}
+                          className="font-medium text-primary underline underline-offset-4"
+                        >
+                          Photos
+                        </Link>
                         <DeletePropertyButton propertyId={property.id} />
                       </div>
                     </td>

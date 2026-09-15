@@ -15,6 +15,7 @@ interface Property {
   location: string
   price: string
   category?: Category
+  images?: string[]
 }
 
 interface Filters {
